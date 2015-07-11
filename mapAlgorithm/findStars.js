@@ -13,7 +13,7 @@ var test2 = [[0,0,0,0,0,0,0,0,0,0,0],
 						 [0,1,1,1,1,1,1,1,1,1,0],
 						 [0,1,1,1,1,1,1,1,1,1,0],
 						 [0,1,1,1,1,1,1,1,1,1,0],
-						 [0,0,1,1,1,0,1,1,1,0,0],
+						 [0,0,1,1,1,1,1,1,1,0,0],
 						 [0,0,0,1,1,0,1,1,0,0,0],
 						 [0,0,0,0,0,0,0,0,0,0,0]];
 
@@ -149,73 +149,67 @@ function findStars(array) {
 		};
 
 		function checkRange(input) {
-			var leftBound, rightBound;
-			/* I'm trying to minimize overhead, and so rather than dedicating space to a
-			new set of variables every time we run this function, here's a translation
-			table for humans trying to make sense of the lines below:
-						y: input[0]
-						startx: input[1]
-						endx: input[2]
-						parent y: was ABOVE if input[3] is -1; BELOW if input[3] is 1
-			If the leftmost pixel in the range, array[y][startx], is white ... */
-			if (array[input[0]][input[1]] === 1) {
-				/* ... set it to 2 and head left as far as you can go ... */
-				array[input[0]][input[1]] = 2;
-				leftBound = paintLeft(input[1], input[0]);
-				/* ... then return to the start and push right ... */
-				rightBound = paintRight(input[1], input[0]);
+			var leftBound = input[1];
+			var rightBound = input[1];
+			var notFinished;
+			/* If the leftmost pixel in the given range is white ... */
+			if (array[input[0]][leftBound] === 1) {
+				/* ... add it to pixelsInStar, set it to 2, and expand in both directions. */
+				pixelsInStar.push([leftBound, input[0]]);
+				array[input[0]][leftBound] = 2;
+				leftBound = paintLeft(leftBound, input[0]);
+				rightBound = paintRight(rightBound, input[0]);
 				/* ... we now have a complete range of contiguous white pixels, which means
 				that it's time to put the two corresponding ranges above and below (minus
 				any overlap, which we don't want to double-check) onto the toBeChecked list,
 				using a function defined below. */
 				addRanges(input[0], leftBound, rightBound, input[1], input[2], input[3]);
-				/* Now we've successfully found a range of white pixels and logged all of
-				them, setting up new toBeChecked ranges in the process.  But we may not have
-				actually made it to the end of the range that needs to be checked. For
-				example, if the input were [10, 2, 20, -1] and we found a stretch of white
-				pixels running from 2 to 10 and then hit a black pixel at 11, we're not done
-				checking yet. */
-				if (rightBound < input[2]) {
-					/* Since we need to pick up where we left off and go further right, and
-					since we'll eventually need to set leftBound equal to the x-value of the
-					first white pixel we find, we'll just go ahead and use the leftBound
-					variable to control our loop.  It will end when either a) it finds a white
-					pixel, or b) leftBound passes endx/input[2] without having ever uncovered
-					a white pixel, meaning that the rest of the range was black and we're
-					already done. */
-					leftBound = rightBound;
-					while(array[input[0]][leftBound] !== 1 && leftBound <= input[2]) {
-						leftBound++;
-					}
-					if (leftBound > input[2]) {
-						return;
-					}
-					/* If we make it to here without hitting a return, it means that leftBound
-					did, indeed, find itself equal to the x-value of a white pixel.  Thus, we
-					don't need any conditional; we can just launch into the next step of the
-					algorithm, which is to paint right.  By now, we've reassigned both
-					leftBound and rightBound, so there are no concerns of getting ourselves
-					stuck in an infinite loop by repeating the same instructions. */
-					rightBound = paintRight(leftBound, input[0]);
-					addRanges(input[0], leftBound, rightBound, input[1], input[2], input[3]);
-				}
 			}
-			/* If the leftmost pixel in the range, array[y][startx], is nonwhite ... */
-			else {
-				/* Applying similar logic as above, we'll just go ahead and use leftBound
-				for our while loop, since it's just sitting there waiting to be called on. */
-				leftBound = input[1];
-				while(array[input[0]][leftBound] !==1 && leftBound <= input[2]) {
+			/* At this point, we MAY have successfully found a range of white pixels and
+			logged them (setting up new toBeChecked ranges in the process), or we may have
+			done NOTHING (if the leftmost pixel wasn't white).  Either way, we can't assume
+			that we've actually made it to the end of the range that needs to be checked.
+			For example, if the input were [10, 2, 20, -1] and we found a stretch of white
+			pixels running from 2 to 10 and then hit a black pixel at 11, we may or may not
+			be missing more white pixels between 12 and 20.  Therefore, if rightBound remains
+			shy of the end of the range ... */
+			if (rightBound < input[2]) {
+				/* ... set the condition that will drive a while loop, and push leftBound so
+				that we can start looking again. */
+				notFinished = true;
+				leftBound = rightBound + 1;
+			}
+			while (notFinished) {
+				/* This time, we need only worry about proceeding to the right, since one
+				way or another, we've eliminated the possibility of relevant pixels to the
+				left. If the leftBound pixel is white, let the paint function take over. */
+				if (array[input[0]][leftBound] === 1) {
+					pixelsInStar.push([leftBound, input[0]]);
+					array[input[0]][leftBound] = 2;
+					rightBound = paintRight(leftBound, input[0]);
+					/* Once we've reached the end of a group of contiguous white pixels, we
+					add that group's child ranges to the list for later checking. Since we've
+					now updated both leftBound and rightBound, there's no need to be concerned
+					about infinite loops where we end up pushing the same ranges over and over
+					again. */
+					addRanges(input[0], leftBound, rightBound, input[1], input[2], input[3]);
+					/* Now we can look again to see whether our rightBound has reached the end
+					of the range we need to check. If so, we set the condition to terminate the
+					loop; if not, we reassign leftBound once again and repeat the process. */
+					if (rightBound >= input[2]) {
+						notFinished = false;
+					} else {
+						leftBound = rightBound + 1;
+					}
+				} else {
+					/* if the leftBound pixel ISN'T white, we just keep incrementing it until
+					we either find one that is, or we reach the end of the range we need to
+					check, at which point we set the condition to terminate the loop. */
 					leftBound++;
+					if (leftBound > input[2]) {
+						notFinished = false;
+					}
 				}
-				if (leftBound > input[2]) {
-					return;
-				}
-				/* Again, if we made it this far, it means that we never hit the return,
-				because leftBound did, indeed, find itself equal to the x-value of a white
-				pixel before hitting the end of the range. Thus we need no conditional. */
-				rightBound = paintRight(leftBound, input[0]);
-				addRanges(input[0], leftBound, rightBound, input[1], input[2], input[3]);
 			};
 
 			function addRanges(currenty, childLeft, childRight, parentL, parentR, vector) {
@@ -277,32 +271,32 @@ function findStars(array) {
 				(illustrated below before being described in code). In the illustrations, [****]
 				indicates the new child range under comparison and [--> <--] indicates the old
 				parent range to be skipped. */
-				function compareRange(startNew, endNew, startOld, endOld, vector) {
+				function compareRange(startNew, endNew, startOld, endOld, newVec) {
 					/* Case 1: ranges do not overlap; add whole child range to list
 					 					[************]
 						<---]  		 		or 		 		 [--->																			*/
 					if (endOld < startNew || endNew < startOld) {
-						toBeChecked.push([currenty - vector, startNew, endNew, vector]);
+						toBeChecked.push([currenty - newVec, startNew, endNew, newVec]);
 						return;
 					}
 					/* Case 2: child fully contained within parent; add nothing
 										[************]
 						 [--->  [---> or <---]  <---]																				*/
-					else if (startOld <= startNew && endNew <= endOld) {
+					if (startOld <= startNew && endNew <= endOld) {
 						return;
 					}
-					/* Case 3: non-overlap on left side of child; add that side to list
+					/* Case 3: non-overlap on left side of child
 										[************]
 														[--->																								*/
-					else if (startNew < startOld) {
-						toBeChecked.push([currenty - vector, startNew, startOld - 1, vector]);
+					if (startNew < startOld) {
+						toBeChecked.push([currenty - newVec, startNew, startOld - 1, newVec]);
 						/* Don't return yet, in case of non-overlap on the right side, too */
 					}
 					/* Case 4: non-overlap on right side of child; add that side to list
 										[************]
 										 <---]																											*/
-					else if (endOld < endNew) {
-						toBeChecked.push([currenty - vector, endOld + 1, endNew, vector]);
+					if (endOld < endNew) {
+						toBeChecked.push([currenty - newVec, endOld + 1, endNew, newVec]);
 					};
 				};
 			};
