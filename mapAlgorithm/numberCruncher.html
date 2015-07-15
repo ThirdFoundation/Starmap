@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="imgApp">
+<head>
+	<meta charset="UTF-8">
+	<title>From starfield to star map</title>
+</head>
+<body>
+	<div ng-controller="coordsController">
+		<div ng-repeat="entry in results">
+			<h3>{{grids[$index]}} results:</h3>
+			<p>{{entry}}</p>
+		</div>
+	</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+		<script src="arrayToCoords.js"></script>
+</body>
+</html>
