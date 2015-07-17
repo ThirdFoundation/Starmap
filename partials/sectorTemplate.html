@@ -1,0 +1,13 @@
+<img ng-src="{{imgURL}}" class="centered" usemap="#localStars">
+<map name="localStars">
+	<area ng-repeat="star in stars"
+				shape="circle"
+				coords="{{star.coords}}"
+				ng-mouseenter="findImage(star.noteURL)"
+				ng-mouseleave="closeImage()"
+				href="{{star.noteURL}}">
+</map>
+
+
+<p>I'm a sector page!  Someday, I'll contain a hoverable picture instead of a paragraph.</p>
+

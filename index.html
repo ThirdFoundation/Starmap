@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="starMap">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+      <link type="text/css" rel="stylesheet" href="css/normalize.css">
+      <link type="text/css" rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <script type="text/javascript" src="js/wz_tooltip.js"></script>
+<!--     <script type="text/javascript" src="js/mapper.js"></script> -->
+    <header ng-controller="SkyController as sky">
+      <div id="mapContainer">
+        <img id="centerpiece" src="img/starsWeb.png" usemap="#sectors">
+        <a ng-repeat="sector in sky.sectors"
+           href="#/{{sector[0]}}"
+           ng-class="{mapSector:  true,
+                      highlit:    current === sector[0],
+                      rowOne:     sector[1] === 'rowOne',
+                      rowTwo:     sector[1] === 'rowTwo',
+                      rowThr:     sector[1] === 'rowThr',
+                      rowFou:     sector[1] === 'rowFou',
+                      colOne:     sector[2] === 'colOne',
+                      colTwo:     sector[2] === 'colTwo',
+                      colThr:     sector[2] === 'colThr',
+                      colFou:     sector[2] === 'colFou',
+                      colFiv:     sector[2] === 'colFiv',
+                      colSix:     sector[2] === 'colSix',
+                      colSev:     sector[2] === 'colSev',
+                      colEig:     sector[2] === 'colEig',
+                      colNin:     sector[2] === 'colNin',
+                      colTen:     sector[2] === 'colTen',
+                      colEle:     sector[2] === 'colEle',
+                      colTwe:     sector[2] === 'colTwe'}"></a>
+    </header>
+
+    <main ng-view></main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-route.js"></script>
+    <script src="js/starMap.js"></script>
+    <script src="js/skyController.js"></script>
+    <script src="js/searchController.js"></script>
+    <script src="js/sectorController.js"></script>
+    <script src="js/noteController.js"></script>
+  </body>
+</html>

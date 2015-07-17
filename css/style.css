@@ -1,0 +1,98 @@
+body {
+	background-color: black;
+}
+
+header {
+	width: 99vw;
+	padding: 30px 10px 30px 5px;
+	background-color: black;
+}
+
+#mapContainer {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+#centerpiece {
+	width: 100%;
+}
+
+.mapSector {
+	display: block;
+	width: 8.333%;
+	height: 25%;
+	position: absolute;
+}
+.highlit {
+	border: 10px solid yellow;
+}
+.mapSector:hover {
+	opacity: .3;
+	background-color: red;
+}
+.rowOne {
+	top: 0%;
+}
+.rowTwo {
+	top: 25%;
+}
+.rowThr {
+	top: 50%;
+}
+.rowFou {
+	top: 75%;
+}
+.colOne {
+	left: 0%;
+}
+.colTwo {
+	left: 8.333%;
+}
+.colThr {
+	left: 16.667%;
+}
+.colFou {
+	left: 25%;
+}
+.colFiv {
+	left: 33.333%;
+}
+.colSix {
+	left: 41.667%;
+}
+.colSev {
+	left: 50%;
+}
+.colEig {
+	left: 58.333%;
+}
+.colNin {
+	left: 66.667%;
+}
+.colTen {
+	left: 75%;
+}
+.colEle {
+	left: 83.333%;
+}
+.colTwe {
+	left: 91.666%;
+}
+.centered {
+	display: block;
+	margin: 10px auto 10px auto;
+}
+
+.maskMap {
+	position: relative;
+	height: 900px;
+	width: 900px;
+	background-color: blue;
+	opacity: .2;
+}
+
+.mask {
+	position: absolute;
+	background-color: white;
+}
