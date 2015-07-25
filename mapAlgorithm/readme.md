@@ -6,7 +6,7 @@ This directory contains the coding work that was needed to convert an image of s
 
 **arrayToCoords.js:** An extended and non-annotated version of the algorithm above, for use in an Angular page built to display final coordinate data.
 
-**imgToArray.py**: Script written by Tanner Lake [Tanner's GitHub](https://github.com/tlake) for converting images into 2D pixel arrays of 0 (black) and 1 (white).
+**imgToArray.py**: Script written by [Tanner Lake](https://github.com/tlake) for converting images into 2D pixel arrays of 0 (black) and 1 (white).
 
 **numberCruncher.html:** Angular HTML page for taking in sector data, applying the arrayToCoords algorithm, and displaying final coordinate data.
 
